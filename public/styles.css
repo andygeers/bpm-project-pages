@@ -14,3 +14,7 @@ li.direction-option {
 li.direction-option-disabled {
   color: #CCC;
 }
+
+div#current-location img {
+  max-width: 400px;
+}

@@ -56,6 +56,7 @@ function CurrentLocation(props) {
           ("Spiderman is in the " + props.places[props.location] + ".")
         }
       </h3>
+      <img src={'location_' + props.location + '.jpg'}/>
     </div>
   )
 }
