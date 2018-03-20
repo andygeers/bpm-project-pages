@@ -1,0 +1,16 @@
+body {
+  font-family: Chalkboard, Chalkduster;
+  color: #0000FF;
+}
+
+li.direction-option {
+  border: 1px solid black;
+  display: inline-block;
+  padding: 15px;
+  margin-right: 10px;
+  background-color: #EEE;
+}
+
+li.direction-option-disabled {
+  color: #CCC;
+}

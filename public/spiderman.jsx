@@ -1,21 +1,70 @@
+function quake(qDuration) {
+  // the horizontal displacement
+  var deltaX=10;
+  var div = document.body;//getElementById('app');
+  doQuake(div, qDuration, 0, deltaX, div.style.marginLeft, div.style.marginTop);
+}
+
+function doQuake(div, qDuration, qCounter, deltaX, startX, startY)
+{
+
+
+  if (qCounter >= qDuration) {
+    div.style.marginLeft = startX;
+    div.style.marginTop = startY;
+
+    // Finish
+  } else {
+    // shake left
+    if ((qCounter%4)==0)
+    {
+      div.style.marginLeft = deltaX + "px";
+      div.style.marginTop = deltaX + "px";
+    }
+    // shake right
+    else if ((qCounter%4)==2)
+    {
+      div.style.marginLeft = -deltaX + "px";
+      div.style.marginTop = -deltaX + "px";
+    }
+    // speed up or slow down every X cycles
+    if ((qCounter%30)==0)
+    {
+      // speed up halfway
+      if (qCounter<qDuration/2)
+      {
+        deltaX++;
+      }
+      // slow down after halfway of the duration
+      else
+      {
+        deltaX--;
+      }
+    }
+
+    // Iterate
+    setTimeout(function() { doQuake(div, qDuration, qCounter + 1, deltaX, startX, startY) }, 1);
+  }
+}
+
 function CurrentLocation(props) {
   return (
     <div id="current-location">
-      <p>
-        Spiderman is in the {props.places[props.location]}.
-      </p>
+      <h3>
+        {props.oof ?
+          "Oof! Spiderman walks in to a wall" :
+          ("Spiderman is in the " + props.places[props.location] + ".")
+        }
+      </h3>
     </div>
   )
 }
 
 function DirectionOption(props) {
-  if (props.map[props.location][parseInt(props.index)] > 0) {
-    return (
-      <li><a href="#" onClick={() => props.move(props.index)}>{props.name}</a></li>
-    )
-  } else {
-    return (<span/>);
-  }
+  var enabled = (props.map[props.location][parseInt(props.index)] > 0);
+  return (
+    <li onClick={() => props.move(props.index)} className={'direction-option' + (enabled ? '' : ' direction-option-disabled') }>{props.name}</li>
+  )
 }
 
 function DirectionOptions(props) {
@@ -61,13 +110,20 @@ class App extends React.Component {
 
   move(dir) {
     var new_location = this.map[this.state.location][parseInt(dir)];
-    this.setState({ location: new_location });
+    if (new_location > 0) {
+      this.setState({ location: new_location });
+    } else {
+      quake(100);
+      this.setState({ oof: true });
+      var _self = this;
+      setTimeout(function() { _self.setState({ oof: false }); }, 3000);
+    }
   }
 
   render() {
     return (
       <div>
-        <CurrentLocation location={this.state.location} places={this.places} />
+        <CurrentLocation location={this.state.location} oof={this.state.oof} places={this.places} />
         <DirectionOptions location={this.state.location} map={this.map} move={(dir) => this.move(dir)}/>
         <DirectionControls location={this.state.location} map={this.map} />
       </div>
